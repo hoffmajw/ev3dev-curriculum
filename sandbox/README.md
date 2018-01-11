@@ -1,5 +1,3 @@
-Jaxon Hoffman
-
 The sandbox is a place for you to individually learn about the EV3 robot.
 You need to work all of the TODO items in your folder to learn about that
 features of the EV3 robot.  You can refer to the `/examples` folder
@@ -24,6 +22,7 @@ The subfolders m1, m2, m3, and m4 that are within this `/sandbox` folder are all
 - Team member #3 (fill in your own name here) will work all of the TODOs in the m3 folder
 - Team member #4 (fill in your own name here) will work all of the TODOs in the m4 folder
 
+Jaxon Hoffman
 **TODO: 2.**
 Fill in your name above then do a VCS -> Commit.. -> Commit and Push.
 As others fill in their names do a VCS -> Update project.
