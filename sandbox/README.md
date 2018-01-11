@@ -24,7 +24,7 @@ The subfolders m1, m2, m3, and m4 that are within this `/sandbox` folder are all
 
 Jaxon Hoffman
 Dominic Yurkanin
-Garrett Jacobs
+Garrett Jacobs is a turd butt
 **TODO: 2.**
 Fill in your name above then do a VCS -> Commit.. -> Commit and Push.
 As others fill in their names do a VCS -> Update project.
