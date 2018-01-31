@@ -98,7 +98,7 @@ def main():
             break
         distance = int(input("Distance to travel (inches):"))
         print('k')
-        time_s = distance/(0.0105*left_sp)
+        time_s = distance/(0.0123*left_sp)
 
         left_motor.run_forever(speed_sp=left_sp)
         right_motor.run_forever(speed_sp=left_sp)
