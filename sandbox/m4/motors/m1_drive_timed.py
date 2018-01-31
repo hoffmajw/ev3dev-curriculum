@@ -91,7 +91,6 @@ def main():
     assert left_motor.connected
     assert right_motor.connected
 
-    time_s = 1  # Any value other than 0.
     while True:
         left_sp = int(input("Enter a speed (0 to 900 dps)"))
         right_sp = left_sp
