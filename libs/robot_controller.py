@@ -21,3 +21,36 @@ class Snatch3r(object):
     
     # TODO: Implement the Snatch3r class as needed when working the sandox exercises
     # (and delete these comments)
+
+    def __init__(self):
+
+        self.left_motor = ev3.LargeMotor(ev3.OUTPUT_B)
+        self.right_motor = ev3.LargeMotor(ev3.OUTPUT_C)
+
+    def drive_inches(self, distance, left_sp):
+        degrees_per_inch = 90
+        motor_turns_needed_in_degrees = distance * degrees_per_inch
+
+        self.left_motor.run_to_rel_pos(
+            position_sp=motor_turns_needed_in_degrees,
+                                  speed_sp=left_sp,
+                                  stop_action=ev3.Motor.STOP_ACTION_BRAKE)
+        self.right_motor.run_to_rel_pos(
+            position_sp=motor_turns_needed_in_degrees,
+                                   speed_sp=left_sp,
+                                   stop_action=ev3.Motor.STOP_ACTION_BRAKE)
+
+        self.left_motor.wait_while(ev3.Motor.STATE_RUNNING)
+        self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
+
+    def turn_degrees(self, degrees_to_turn, turn_speed_sp):
+        degrees_to_turn = degrees_to_turn * 4.53
+
+        self.left_motor.run_to_rel_pos(position_sp=(-1) * degrees_to_turn,
+                                           speed_sp=turn_speed_sp,
+                                           stop_action=ev3.Motor.STOP_ACTION_BRAKE)
+        self.right_motor.run_to_rel_pos(position_sp=degrees_to_turn,
+                                            speed_sp=turn_speed_sp,
+                                            stop_action=ev3.Motor.STOP_ACTION_BRAKE)
+        self.left_motor.wait_while(ev3.Motor.STATE_RUNNING)
+        self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
