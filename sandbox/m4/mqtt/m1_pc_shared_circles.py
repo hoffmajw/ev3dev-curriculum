@@ -120,7 +120,7 @@ def left_mouse_click(event, mqtt_client):
     # Try to draw the first letter of your name in circles. :)
 
     # TODO: 9. Call over a TA or instructor to sign your team's checkoff sheet.
-    #
+    #   
     # Observations you should make, with MQTT your team can hear your messages.
     # You published messages to the "legoXX/draw" topic (where XX is the number set in libs/mqtt_remote_method_calls.py)
     # You subscribed to messages for the "legoXX/draw" topic (so you are talking to yourself and others)
