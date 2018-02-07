@@ -36,6 +36,15 @@ class Snatch3r(object):
         except AssertionError:
             print("Motors may not be connected.", file=sys.stderr)
 
+    def loop_forever(self):
+        # This is a convenience method that I don't really recommend for most programs other than m5.
+        #   This method is only useful if the only input to the robot is coming via mqtt.
+        #   MQTT messages will still call methods, but no other input or output happens.
+        # This method is given here since the concept might be confusing.
+        self.running = True
+        while self.running:
+            time.sleep(0.1)
+
     def drive_inches(self, distance, left_sp):
         self.unplugged()
 
@@ -84,9 +93,30 @@ class Snatch3r(object):
         self.arm_motor.position = 0  # Calibrate the down position as 0 (this
         # line is correct as is).
 
+    def move_forward(self, left_speed, right_speed):
+        self.left_motor.run_forever(speed_sp=left_speed)
+        self.right_motor.run_forever(speed_sp=right_speed)
+
+    def move_back(self, left_speed, right_speed):
+        self.left_motor.run_forever(speed_sp=-left_speed)
+        self.right_motor.run_forever(speed_sp=-right_speed)
+
+    def turn_right(self, left_speed, right_speed):
+        self.left_motor.run_forever(speed_sp=left_speed)
+        self.right_motor.run_forever(speed_sp=-right_speed)
+
+    def turn_left(self, left_speed, right_speed):
+        self.left_motor.run_forever(speed_sp=-left_speed)
+        self.right_motor.run_forever(speed_sp=right_speed)
+
+    def stop(self):
+        self.left_motor.stop()
+        self.right_motor.stop()
+
     def arm_up(self):
-        self.arm_motor.run_to_rel_pos(position_sp=360*14.2, speed_sp=self.max_speed)
-        # self.arm_motor.run_forever(speed_sp=self.max_speed)
+        #self.arm_motor.run_to_rel_pos(position_sp=360*14.2,
+        # speed_sp=self.max_speed)
+        self.arm_motor.run_forever(speed_sp=self.max_speed)
         while True:
             if self.touch_sensor.is_pressed:
                 break
