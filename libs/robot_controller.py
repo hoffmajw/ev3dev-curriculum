@@ -20,11 +20,13 @@ class Snatch3r(object):
     """Commands for the Snatch3r robot that might be useful in many different programs."""
 
     def __init__(self):
-
+        """"""
+        self.running = True
         self.left_motor = ev3.LargeMotor(ev3.OUTPUT_B)
         self.right_motor = ev3.LargeMotor(ev3.OUTPUT_C)
         self.arm_motor = ev3.MediumMotor(ev3.OUTPUT_A)
         self.touch_sensor = ev3.TouchSensor()
+        self.color_sensor = ev3.ColorSensor()
         self.max_speed = 900
 
         self.unplugged()
@@ -33,10 +35,26 @@ class Snatch3r(object):
         try:
             assert self.left_motor.connected
             assert self.right_motor.connected
+            assert self.arm_motor.connected
+            assert self.touch_sensor.connected
+            assert self.color_sensor.connected
+            assert self.color_sensor.connected
         except AssertionError:
             print("Motors may not be connected.", file=sys.stderr)
 
+    def loop_forever(self):
+        # This is a convenience method that I don't really recommend for most programs other than m5.
+        #   This method is only useful if the only input to the robot is coming via mqtt.
+        #   MQTT messages will still call methods, but no other input or output happens.
+        # This method is given here since the concept might be confusing.
+        self.running = True
+        while self.running:
+            time.sleep(0.1)
+
     def drive_inches(self, distance, left_sp):
+        """Drives the specified distance for the specified speed
+            Forward if distance is greater than 0, and back if
+            distance is less than 0"""
         self.unplugged()
 
         degrees_per_inch = 90
@@ -55,6 +73,9 @@ class Snatch3r(object):
         self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
 
     def turn_degrees(self, degrees_to_turn, turn_speed_sp):
+        """Will turn the robot the specified degrees at the specified speed.
+            Turns left if degrees are positive, and right if degrees are
+            negative"""
         degrees_to_turn = degrees_to_turn * 4.53
 
         self.left_motor.run_to_rel_pos(position_sp=(-1) * degrees_to_turn,
@@ -67,6 +88,8 @@ class Snatch3r(object):
         self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
 
     def arm_calibration(self):
+        """Raises then lowers the arm at max speed and sets the absolute
+        position 0 to be the bottom of the arms motion"""
         self.arm_motor.run_forever(speed_sp=self.max_speed)
         while True:
             if self.touch_sensor.is_pressed:
@@ -77,16 +100,42 @@ class Snatch3r(object):
 
         arm_revolutions_for_full_range = 14.2
         self.arm_motor.run_to_rel_pos(
-            position_sp=-arm_revolutions_for_full_range *
-                                             360, speed_sp=self.max_speed)
+            position_sp=-arm_revolutions_for_full_range * 360,
+            speed_sp=self.max_speed)
         self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)
 
-        self.arm_motor.position = 0  # Calibrate the down position as 0 (this
-        # line is correct as is).
+        self.arm_motor.position = 0
+
+    def move_forward(self, left_speed, right_speed):
+        """Drives robot forward at the specified speed until another
+            drive method is called"""
+        self.left_motor.run_forever(speed_sp=left_speed)
+        self.right_motor.run_forever(speed_sp=right_speed)
+
+    def move_back(self, left_speed, right_speed):
+        """Moves robot backwards at the specified speed"""
+        self.left_motor.run_forever(speed_sp=-left_speed)
+        self.right_motor.run_forever(speed_sp=-right_speed)
+
+    def turn_right(self, left_speed, right_speed):
+        """Turns the robot right at the specified speed"""
+        self.left_motor.run_forever(speed_sp=left_speed)
+        self.right_motor.run_forever(speed_sp=-right_speed)
+
+    def turn_left(self, left_speed, right_speed):
+        """Turns the robot left at the specified speed"""
+        self.left_motor.run_forever(speed_sp=-left_speed)
+        self.right_motor.run_forever(speed_sp=right_speed)
+
+    def stop(self):
+        """Stops the left and right motors"""
+        self.left_motor.stop()
+        self.right_motor.stop()
 
     def arm_up(self):
-        self.arm_motor.run_to_rel_pos(position_sp=360*14.2, speed_sp=self.max_speed)
-        # self.arm_motor.run_forever(speed_sp=self.max_speed)
+        """Brings the robot arm up until the touch sensor is pressed
+            (highest position)"""
+        self.arm_motor.run_forever(speed_sp=self.max_speed)
         while True:
             if self.touch_sensor.is_pressed:
                 break
@@ -94,13 +143,14 @@ class Snatch3r(object):
         self.arm_motor.stop()
 
     def arm_down(self):
-        self.arm_motor.run_to_rel_pos(position_sp=-14.2 * 360,
+        """Brings the arm down to its lowest position"""
+        self.arm_motor.run_to_abs_pos(position_sp=0,
                                       speed_sp=self.max_speed)
         self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)
-        # Blocks until the motor finishes running
         ev3.Sound.beep()
 
     def shutdown(self):
+        """Stops all motors and sets leds to green"""
         self.left_motor.stop()
         self.right_motor.stop()
         self.arm_motor.stop()
