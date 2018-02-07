@@ -67,11 +67,16 @@ def main():
     # Remote control channel 1 is for driving the crawler tracks around (none of these functions exist yet below).
     # Remote control channel 2 is for moving the arm up and down (all of these functions already exist below).
 
-    remote1.on_red_up = lambda state: handle_red_up_1(robot)
-    remote1.on_red_down = lambda state: handle_red_down_1(robot)
-    remote1.on_blue_down = lambda state: handle_blue_down_1(robot)
-    remote1.on_blue_up = lambda state: handle_blue_up_1(robot)
+    remote1.on_red_up = lambda state: handle_red_up_1(state, robot)
+    remote1.on_red_down = lambda state: handle_red_down_1(state, robot)
+    remote1.on_blue_down = lambda state: handle_blue_down_1(state, robot)
+    remote1.on_blue_up = lambda state: handle_blue_up_1(state, robot)
 
+    # if remote1.red_up is 0:
+    #     robot.left_motor.stop()
+
+    # if remote1.on_red_up is False:
+    #     robot.left_motor.stop()
     remote2.on_red_up = lambda state: handle_arm_up_button(state, robot)
     remote2.on_red_down = lambda state: handle_arm_down_button(state, robot)
     remote2.on_blue_up = lambda state: handle_calibrate_button(state, robot)
@@ -80,8 +85,7 @@ def main():
     btn = ev3.Button()
     btn.on_backspace = lambda state: handle_shutdown(state, dc)
 
-    robot.arm_calibration()  # Start with an arm calibration in this program.
-
+    # robot.arm_calibration()  # Start with an arm calibration in this program.
     while dc.running:
         # TODO: 5. Process the RemoteControl objects.
         btn.process()
@@ -110,23 +114,44 @@ def main():
 # Observations you should make, IR buttons are a fun way to control the robot.
 
 
-def handle_red_up_1(robot):
+def handle_red_up_1(state, robot):
     ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.GREEN)
     ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.BLACK)
 
     robot.left_motor.run_forever(speed_sp=600)
 
-
-def handle_red_down_1(robot):
-    return None
-
-
-def handle_blue_up_1(robot):
-    return None
+    if state == 0:
+        robot.left_motor.stop()
 
 
-def handle_blue_down_1(robot):
-    return None
+def handle_red_down_1(state, robot):
+    ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.RED)
+    ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.BLACK)
+
+    robot.left_motor.run_forever(speed_sp=-600)
+
+    if state == 0:
+        robot.left_motor.stop()
+
+
+def handle_blue_up_1(state, robot):
+    ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.BLACK)
+    ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.GREEN)
+
+    robot.right_motor.run_forever(speed_sp=600)
+
+    if state == 0:
+        robot.right_motor.stop()
+
+
+def handle_blue_down_1(state, robot):
+    ev3.Leds.set_color(ev3.Leds.LEFT, ev3.Leds.BLACK)
+    ev3.Leds.set_color(ev3.Leds.RIGHT, ev3.Leds.RED)
+
+    robot.right_motor.run_forever(speed_sp=-600)
+
+    if state == 0:
+        robot.right_motor.stop()
 
 
 def handle_arm_up_button(button_state, robot):

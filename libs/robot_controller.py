@@ -94,8 +94,8 @@ class Snatch3r(object):
         self.arm_motor.stop()
 
     def arm_down(self):
-        self.arm_motor.run_to_abs_pos(-self.arm_motor.run_to_rel_pos(
-            position_sp=-14.2 * 360), speed_sp=self.max_speed)
+        self.arm_motor.run_to_rel_pos(position_sp=-14.2 * 360,
+                                      speed_sp=self.max_speed)
         self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)
         # Blocks until the motor finishes running
         ev3.Sound.beep()
