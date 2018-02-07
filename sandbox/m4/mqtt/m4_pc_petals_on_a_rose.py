@@ -27,9 +27,12 @@ import mqtt_remote_method_calls as com
 # Done: 2. Create a class. Feel free to call it MyDelegate.
 # Within that class you don't even need an __init__ constructor (an empty constructor comes for free)
 
+def guess_response(message_from_ev3):
+    print(message_from_ev3)
+
+
 class MyDelegate(object):
-    def guess_response(self, message_from_ev3):
-        print(message_from_ev3)
+    pass
 
 # Done: 3. Create a method named guess_response within MyDelegate.
 # guess_response needs to receive self and a string, feel free to call the string parameter message_from_ev3
@@ -90,6 +93,8 @@ def guess(mqtt_client, number_to_guess_entry):
 
 def set_num_dice(mqtt_client, num_dice_entry):
     """ Calls a method on EV3 called 'set_number_of_dice' passing in an int from the num_dice_entry. """
+    set_num_dice(mqtt_client, num_dice_entry.get())
+
     # Done: 6. Write the line of code necessary to implement this method based
     # on the doc string's description.
 
