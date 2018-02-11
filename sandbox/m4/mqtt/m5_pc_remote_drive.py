@@ -164,7 +164,7 @@ def back_callback(mqtt_client, left_speed_entry, right_speed_entry):
 # Done: 5. Call over a TA or instructor to sign your team's checkoff sheet and
 # do a code review.  This is the final one!
 #
-# Observations you should make, you did basically this same program using the IR Remote, but your computer can be a
+# Observations you should make , you did basically this same program using the IR Remote, but your computer can be a
 # remote control that can do A LOT more than an IR Remote.  We are just doing the basics here.
 
 

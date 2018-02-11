@@ -14,6 +14,7 @@
 import ev3dev.ev3 as ev3
 import sys
 import time
+import math
 
 
 class Snatch3r(object):
@@ -23,11 +24,13 @@ class Snatch3r(object):
         """"""
         self.running = True
         self.left_motor = ev3.LargeMotor(ev3.OUTPUT_B)
-        self.right_motor = ev3.LargeMotor(ev3.OUTPUT_D)
+        self.right_motor = ev3.LargeMotor(ev3.OUTPUT_C)
         self.arm_motor = ev3.MediumMotor(ev3.OUTPUT_A)
         self.touch_sensor = ev3.TouchSensor()
         self.color_sensor = ev3.ColorSensor()
+        self.beacon = ev3.BeaconSeeker(channel=2)
         self.ir = ev3.InfraredSensor()
+        self.pixy = ev3.Sensor(driver_name="pixy-lego")
         self.max_speed = 900
 
         self.unplugged()
@@ -40,6 +43,7 @@ class Snatch3r(object):
             assert self.touch_sensor.connected
             assert self.color_sensor.connected
             assert self.ir.connected
+            assert self.pixy.connected
         except AssertionError:
             print("Motors may not be connected.", file=sys.stderr)
 
@@ -149,6 +153,38 @@ class Snatch3r(object):
                                       speed_sp=self.max_speed)
         self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)
         ev3.Sound.beep()
+
+    def seek_beacon(self):
+        forward_speed = 500
+        turn_speed = 100
+
+        while not self.touch_sensor.is_pressed:
+            current_heading = self.beacon.heading  # use the beacon_seeker heading
+            current_distance = self.beacon.distance  # use the beacon_seeker distance
+            if current_distance == -128:
+                # If the IR Remote is not found just sit idle for this program until it is moved.
+                print("IR Remote not found. Distance is -128")
+                self.turn_right(turn_speed, turn_speed)
+            else:
+                if math.fabs(self.beacon.heading) < 2:
+                    # Close enough of a heading to move forward
+                    print("On the right heading. Distance: ", current_distance)
+                    if self.beacon.distance == 0:
+                        self.stop()
+                        return True
+                    else:
+                        self.move_forward(forward_speed, forward_speed)
+                if (math.fabs(self.beacon.heading) > 2) & (math.fabs(self.beacon.heading) < 10):
+                    if self.beacon.heading < 0:
+                        self.turn_left(turn_speed, turn_speed)
+                    if self.beacon.heading > 0:
+                        self.turn_right(turn_speed, turn_speed)
+                if math.fabs(self.beacon.heading > 10):
+                    print('Beacon is not in range, spinning until beacon found.')
+                    while True:
+                        self.turn_right(turn_speed, turn_speed)
+                        if math.fabs(self.beacon.heading) < 10:
+                            break
 
     def shutdown(self):
         """Stops all motors and sets leds to green"""

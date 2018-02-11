@@ -29,11 +29,10 @@ def main():
     robot = robo.Snatch3r()
     try:
         while True:
-            seek_beacon(robot)
-
+            if seek_beacon(robot) is True:
             # TODO: 5. Save the result of the seek_beacon function (a bool), then use that value to only say "Found the
             # beacon" if the return value is True.  (i.e. don't say "Found the beacon" if the attempts was cancelled.)
-            ev3.Sound.speak("Found the beacon")
+                ev3.Sound.speak("Found the beacon")
 
             command = input("Hit enter to seek the beacon again or enter q to quit: ")
             if command == "q":
@@ -58,7 +57,7 @@ def seek_beacon(robot):
 
     # TODO: 2. Create a BeaconSeeker object on channel 1.
 
-    beacon = ev3.BeaconSeeker(channel=1)
+    beacon = ev3.BeaconSeeker(channel=2)
     forward_speed = 500
     turn_speed = 100
 
@@ -90,30 +89,23 @@ def seek_beacon(robot):
             #    print("Heading is too far off to fix: ", current_heading)
 
             # Here is some code to help get you started
-            if (math.fabs(current_heading) > 2) & (math.fabs(
-                    current_heading) < 10):
-                time.sleep(.1)
-                if current_heading < 0:
-                    print('Object is to the left. Current Heading:', current_heading)
-                    while True:
-                        robot.turn_left(turn_speed, turn_speed)
-                        if beacon.heading == 0:
-                            break
-                elif current_heading > 0:
-                    print('Object is to the right. Current Heading:', current_heading)
-                    while True:
-                        robot.turn_right(turn_speed, turn_speed)
-                        if beacon.heading == 0:
-                            break
-            elif math.fabs(current_heading) < 2:
-                print("On the right heading. Distance: ", current_distance,
-                      'Heading:', current_heading)
-                time.sleep(.1)
-                if current_distance > 2:
-                    robot.move_forward(forward_speed, forward_speed)
-                elif current_distance == 1:
+
+            if math.fabs(beacon.heading) < 2:
+                # Close enough of a heading to move forward
+                print("On the right heading. Distance: ", current_distance)
+                if beacon.distance == 0:
                     robot.stop()
                     return True
+                else:
+                    robot.move_forward(forward_speed, forward_speed)
+            if (math.fabs(beacon.heading) > 2) & (math.fabs(beacon.heading) < 10):
+                if beacon.heading < 0:
+                    robot.turn_left(turn_speed, turn_speed)
+                if beacon.heading > 0:
+                    robot.turn_right(turn_speed, turn_speed)
+            if math.fabs(beacon.heading > 10):
+                robot.stop()
+                return
 
     time.sleep(0.2)
 

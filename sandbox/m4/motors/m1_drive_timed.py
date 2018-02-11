@@ -92,7 +92,7 @@ def main():
     assert right_motor.connected
 
     while True:
-        left_sp = int(input("Enter a speed (0 to 900 dpsssss)"))
+        left_sp = int(input("Enter a speed (0 to 900 dps)"))
         print('h')
         if(left_sp ==0):
             break
