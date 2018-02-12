@@ -48,7 +48,8 @@ def main():
                 robot.arm_up()
                 time.sleep(1)
                 robot.arm_down()
-            command = input("Hit enter to seek the beacon again or enter q to quit: ")
+            command = input(
+                "Hit enter to seek the beacon again or enter q to quit: ")
             if command == "q":
                 break
     except:

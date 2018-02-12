@@ -21,7 +21,6 @@ class Snatch3r(object):
     """Commands for the Snatch3r robot that might be useful in many different programs."""
 
     def __init__(self):
-        """"""
         self.running = True
         self.left_motor = ev3.LargeMotor(ev3.OUTPUT_B)
         self.right_motor = ev3.LargeMotor(ev3.OUTPUT_C)
@@ -46,12 +45,9 @@ class Snatch3r(object):
             assert self.pixy.connected
         except AssertionError:
             print("Motors may not be connected.", file=sys.stderr)
+            raise
 
     def loop_forever(self):
-        # This is a convenience method that I don't really recommend for most programs other than m5.
-        #   This method is only useful if the only input to the robot is coming via mqtt.
-        #   MQTT messages will still call methods, but no other input or output happens.
-        # This method is given here since the concept might be confusing.
         self.running = True
         while self.running:
             time.sleep(0.1)
@@ -152,14 +148,16 @@ class Snatch3r(object):
         self.arm_motor.run_to_abs_pos(position_sp=0,
                                       speed_sp=self.max_speed)
         self.arm_motor.wait_while(ev3.Motor.STATE_RUNNING)
-        ev3.Sound.beep()
 
     def seek_beacon(self):
+        """ Looks for a nearby beacon with the ir sensor and drives to the
+        beacon, stopping when the beacon is in the robots grabber. Returns
+        true if the beacon is found and false if the beacon is not in range."""
+
         forward_speed = 500
         turn_speed = 100
 
         while not self.touch_sensor.is_pressed:
-            current_heading = self.beacon.heading  # use the beacon_seeker heading
             current_distance = self.beacon.distance  # use the beacon_seeker distance
             if current_distance == -128:
                 # If the IR Remote is not found just sit idle for this program until it is moved.
@@ -184,7 +182,7 @@ class Snatch3r(object):
                     while True:
                         self.turn_right(turn_speed, turn_speed)
                         if math.fabs(self.beacon.heading) < 10:
-                            break
+                            return False
 
     def shutdown(self):
         """Stops all motors and sets leds to green"""
