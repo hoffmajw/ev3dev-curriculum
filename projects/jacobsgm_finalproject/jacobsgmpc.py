@@ -5,7 +5,7 @@ Authors: David Fisher and Jaxon Hoffman and Garrett Jacobs.
 
 import tkinter
 from tkinter import ttk
-import ev3dev.ev3 as jacobsgmev3
+import ev3dev.ev3 as ev3
 import time
 import jacobsgmrobotcontroller as robo
 import mqtt_remote_method_calls as com
@@ -13,17 +13,20 @@ import mqtt_remote_method_calls as com
 
 def main():
     # a MyDelegate class.  Simply construct the MqttClient with no parameter in the constructor (easy).
-    color_to_seek_list = []
+
+
     mqtt_client = com.MqttClient()
     mqtt_client.connect_to_ev3()
 
     root = tkinter.Tk()
-    root.title("MQTT Remote")
+    root.title("Sorry! BoardGame")
 
     main_frame = ttk.Frame(root, padding=20, relief='raised')
     main_frame.grid()
 
 
+
+    #Buttons
     forward_button = ttk.Button(main_frame, text="Forward")
     forward_button.grid(row=2, column=1)
     forward_button['command'] = lambda: forward_callback(mqtt_client)
@@ -49,17 +52,16 @@ def main():
     back_button['command'] = lambda: back_callback(mqtt_client)
     root.bind('<Down>', lambda event: back_callback(mqtt_client))
 
-    up_button = ttk.Button(main_frame, text="Up")
-    up_button.grid(row=5, column=0)
-    up_button['command'] = lambda: send_up(mqtt_client)
-    root.bind('<u>', lambda event: send_up(mqtt_client))
+    gloat_button = ttk.Button(main_frame, text="Gloat")
+    gloat_button.grid(row=5, column=0)
+    gloat_button['command'] = lambda: send_gloat(mqtt_client)
+    root.bind('<g>', lambda event: send_gloat(mqtt_client))
 
-    down_button = ttk.Button(main_frame, text="Down")
-    down_button.grid(row=6, column=0)
-    down_button['command'] = lambda: send_down(mqtt_client)
-    root.bind('<j>', lambda event: send_down(mqtt_client))
+    wave_button = ttk.Button(main_frame, text="Wave")
+    wave_button.grid(row=6, column=0)
+    wave_button['command'] = lambda: send_wave(mqtt_client)
+    root.bind('<w>', lambda event: send_wave(mqtt_client))
 
-    # Buttons for quit and exit
     q_button = ttk.Button(main_frame, text="Quit")
     q_button.grid(row=5, column=2)
     q_button['command'] = (lambda: quit_program(mqtt_client, False))
@@ -69,6 +71,8 @@ def main():
     e_button['command'] = (lambda: quit_program(mqtt_client, True))
 
     root.mainloop()
+
+
 
 
 def forward_callback(mqtt_client):
@@ -89,15 +93,20 @@ def stop_callback(mqtt_client):
 
 
 
-# Arm command callbacks
-def send_up(mqtt_client):
-    print("arm_up")
+
+
+def send_gloat(mqtt_client):
+    print("You are gloating!")
     mqtt_client.send_message("arm_up")
-
-
-def send_down(mqtt_client):
-    print("arm_down")
+    mqtt_client.send_message("turn_circle")
     mqtt_client.send_message("arm_down")
+
+def send_wave(mqtt_client):
+    print("You are waving!")
+    mqtt_client.send_message("arm_up")
+    mqtt_client.send_message("turn_left")
+    mqtt_client.send_message("turn_right")
+    mqtt_client.sendmessage("arm_down")
 
 
 # Quit and Exit button callbacks
@@ -108,23 +117,6 @@ def quit_program(mqtt_client, shutdown_ev3):
     mqtt_client.close()
     exit()
 
-#Start of my own methods
-
-def drive_to_color(button_state, robot, color_to_seek):
-    """
-    When the button_state is True (pressed), drives the robot forward until the desired color is detected.
-    When the color_to_seek is detected the robot stops moving forward and reacts to each color accordingly.
-    """
-
-    if button_state:
-
-        while True:
-            robot.move_forward(300, 300)
-            if robot.color_sensor.color == color_to_seek:
-                robot.stop()
-                break
-
-        jacobsgmev3.Sound.speak("Found " + COLOR_NAMES[color_to_seek]).wait()
 
 
 # ----------------------------------------------------------------------

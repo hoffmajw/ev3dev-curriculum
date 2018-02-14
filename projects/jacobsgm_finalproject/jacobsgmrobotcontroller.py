@@ -16,9 +16,11 @@ import sys
 import time
 import math
 
+COLOR_NAMES = ["Blue","Red"]
 
 class Snatch3r(object):
     """Commands for the Snatch3r robot that might be useful in many different programs."""
+
 
     def __init__(self):
         self.running = True
@@ -87,6 +89,31 @@ class Snatch3r(object):
                                         stop_action=ev3.Motor.STOP_ACTION_BRAKE)
         self.left_motor.wait_while(ev3.Motor.STATE_RUNNING)
         self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
+
+
+
+
+
+    def turn_circle(self,turn_speed_sp=600):
+        """Will turn the robot 360 degrees at the specified speed.
+            Turns left if degrees are positive, and right if degrees are
+            negative"""
+
+        degrees_to_turn = 360 * 4.53
+
+        self.left_motor.run_to_rel_pos(position_sp=(-1) * degrees_to_turn,
+                                       speed_sp=turn_speed_sp,
+                                       stop_action=ev3.Motor.STOP_ACTION_BRAKE)
+        self.right_motor.run_to_rel_pos(position_sp=degrees_to_turn,
+                                        speed_sp=turn_speed_sp,
+                                        stop_action=ev3.Motor.STOP_ACTION_BRAKE)
+        self.left_motor.wait_while(ev3.Motor.STATE_RUNNING)
+        self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
+
+
+
+
+
 
     def arm_calibration(self):
         """Raises then lowers the arm at max speed and sets the absolute
@@ -183,6 +210,30 @@ class Snatch3r(object):
                         self.turn_right(turn_speed, turn_speed)
                         if math.fabs(self.beacon.heading) < 10:
                             return False
+
+    def drive_to_color(self,COLOR_NAMES):
+        """
+        When the button_state is True (pressed), drives the robot forward until the desired color is detected.
+        When the color_to_seek is detected the robot stops moving forward and reacts to the color accordingly.
+        """
+        self.move_forward(600, 600)
+
+        while True:
+            if self.color_sensor.color == COLOR_NAMES[0] or COLOR_NAMES[1]:
+                if(self.color_sensor== COLOR_NAMES[0]):
+                    self.stop()
+                    ev3.Sound.speak("You have hit another player! Sorry!").wait()
+                    self.move_forward_one()
+                    #need to make method to move out of blue forward
+                    #gain of points
+                elif(self.color_sensor== COLOR_NAMES[1]):
+                    self.stop()
+                    ev3.Sound.speak("You have gotten hit by another player. Oh man!").wait()
+                    self.move_forward_one()
+                    #make the mthod to move forward one out of the red
+                    #loss of points
+
+                break
 
     def shutdown(self):
         """Stops all motors and sets leds to green"""
