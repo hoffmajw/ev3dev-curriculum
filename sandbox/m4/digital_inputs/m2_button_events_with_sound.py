@@ -72,7 +72,9 @@ def main():
         time.sleep(0.01)  # A short delay is important to allow other things to happen.
 
     print("Goodbye!")
+    speak()
     ev3.Sound.speak("Goodbye").wait()
+    time.sleep(5)
 
 
 # ----------------------------------------------------------------------
@@ -220,8 +222,9 @@ def speak():
     """
     Example of using the speak command.  This is probably the most useful ev3.Sound feature.
     """
-    ev3.Sound.speak("Everything is awesome!")  # This version does not wait for the sound to complete to continue
-    # ev3.Sound.speak("Everything is awesome!").wait()  # This version blocks future code execution until complete.
+    # ev3.Sound.speak("Everything is awesome!")  # This version does not wait
+    #  for the sound to complete to continue
+    ev3.Sound.speak("Everything is awesome!").wait()  # This version blocks future code execution until complete.
 
 
 def play_wav_file():
