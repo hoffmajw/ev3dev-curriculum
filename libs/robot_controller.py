@@ -30,9 +30,10 @@ class Snatch3r(object):
         self.beacon = ev3.BeaconSeeker(channel=2)
         self.ir = ev3.InfraredSensor()
         self.pixy = ev3.Sensor(driver_name="pixy-lego")
+        self.items_in_cart = []
         self.max_speed = 900
 
-        self.unplugged()
+      #  self.unplugged()
 
     def unplugged(self):
         try:

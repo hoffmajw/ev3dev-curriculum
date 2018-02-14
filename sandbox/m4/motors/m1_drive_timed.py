@@ -94,7 +94,7 @@ def main():
     while True:
         left_sp = int(input("Enter a speed (0 to 900 dps)"))
         print('h')
-        if(left_sp ==0):
+        if left_sp == 0:
             break
         distance = int(input("Distance to travel (inches):"))
         print('k')
@@ -115,8 +115,6 @@ def main():
 # Calls  main  to start the ball rolling.
 # ----------------------------------------------------------------------
 main()
-
-
 
 # DONE: 4. Change the input questions from:
 #   Enter a speed for the left motor (0 to 900 dps):
@@ -146,5 +144,3 @@ main()
 # do a code review.
 #
 #  Observation you should make, the pattern run_forever-->time.sleep-->stop naturally blocks code execution until done.
-
-

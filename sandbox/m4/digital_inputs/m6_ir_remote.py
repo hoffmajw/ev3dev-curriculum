@@ -87,7 +87,7 @@ def main():
 
     # robot.arm_calibration()  # Start with an arm calibration in this program.
     while dc.running:
-        # TODO: 5. Process the RemoteControl objects.
+        # Done: 5. Process the RemoteControl objects.
         btn.process()
         remote1.process()
         remote2.process()
@@ -107,9 +107,10 @@ def main():
 # Some event handlers have been written for you (ones for the arm).
 # Movement event handlers have not been provided.
 # ----------------------------------------------------------------------
-# TODO: 6. Implement the IR handler callbacks handlers.
+# Done: 6. Implement the IR handler callbacks handlers.
 
-# TODO: 7. When your program is complete, call over a TA or instructor to sign your checkoff sheet and do a code review.
+# Done: 7. When your program is complete, call over a TA or instructor to sign
+# your checkoff sheet and do a code review.
 #
 # Observations you should make, IR buttons are a fun way to control the robot.
 
@@ -204,4 +205,6 @@ def handle_shutdown(button_state, dc):
 # ----------------------------------------------------------------------
 # Calls  main  to start the ball rolling.
 # ----------------------------------------------------------------------
+
+
 main()
