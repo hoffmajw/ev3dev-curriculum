@@ -72,9 +72,6 @@ def main():
 
     root.mainloop()
 
-
-
-
 def forward_callback(mqtt_client):
     mqtt_client.send_message("move_forward",[600,600])
 
@@ -82,17 +79,13 @@ def back_callback(mqtt_client):
     mqtt_client.send_message("move_back",[600,600])
 
 def left_callback(mqtt_client):
-    mqtt_client.send_message("turn_degrees",90,600)
+    mqtt_client.send_message("turn_degrees",[90,600])
 
 def right_callback(mqtt_client):
-    mqtt_client.send_message("turn_degrees",-90,600)
+    mqtt_client.send_message("turn_degrees",[-90,600])
 
 def stop_callback(mqtt_client):
     mqtt_client.send_message("stop")
-
-
-
-
 
 
 def send_gloat(mqtt_client):
@@ -104,9 +97,9 @@ def send_gloat(mqtt_client):
 def send_wave(mqtt_client):
     print("You are waving!")
     mqtt_client.send_message("arm_up")
-    mqtt_client.send_message("turn_left")
-    mqtt_client.send_message("turn_right")
-    mqtt_client.sendmessage("arm_down")
+    mqtt_client.send_message("turn_degrees",[90,600])
+    mqtt_client.send_message("turn_degrees",[-90,600])
+    mqtt_client.send_message("arm_down")
 
 
 # Quit and Exit button callbacks
