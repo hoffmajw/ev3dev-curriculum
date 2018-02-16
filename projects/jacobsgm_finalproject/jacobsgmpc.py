@@ -20,25 +20,48 @@ def main():
     root = tkinter.Tk()
     root.title("Sorry! BoardGame")
 
-    main_frame = ttk.Frame(root, padding=20, relief='raised')
+    #main_frame = ttk.Frame(root, padding=20, relief='raised')
+    #main_frame.grid()
+
+
+    def on_configure(event):
+        # update scrollregion after starting 'mainloop'
+        #  when all widgets are in canvas
+        canvas.configure(scrollregion=canvas.bbox('all'))
+
+    canvas = tkinter.Canvas(root)
+    canvas.pack(side=tkinter.LEFT)
+
+    scrollbar = tkinter.Scrollbar(root, command=canvas.yview)
+    scrollbar.pack(side=tkinter.LEFT, fill='y')
+
+    canvas.configure(yscrollcommand=scrollbar.set)
+    # update scrollregion after starting 'mainloop'
+    # when all widgets are in canvas
+    canvas.bind('<Configure>', on_configure)
+
+    # --- put frame in canvas ---
+
+    main_frame = tkinter.Frame(canvas)
+    canvas.create_window((0, 0), window=main_frame, anchor='nw')
     main_frame.grid()
 
-    photo = tkinter.PhotoImage(file='tkinter_mqtt_ev3.gif',width = 1,height = 1)
+    photo = tkinter.PhotoImage(file='sorry.gif',width =50,height = 50)
     button1 = ttk.Button(main_frame, image=photo)
     button1.image = photo
-    button1.grid()
-    button1['command'] = lambda: print('You found the hidden easter egg!, '
-                                       'You automatically win the match between'
+    button1.grid(column=1)
+    button1['command'] = lambda: print(' You found the hidden easter egg!, '
+                                       ' You automatically win the match between'
                                        ' you and you opponent! Feel free to brag!'
-                                       'Maybe even use the Gloat function hahaha!!')
+                                       ' Maybe even use the Gloat function hahaha!!')
     #Buttons
-    drive_to_color_button = ttk.Button(main_frame, text="Forward")
-    drive_to_color_button.grid(row=2, column=1)
+    drive_to_color_button = ttk.Button(main_frame, text="Color")
+    drive_to_color_button.grid(row=7, column=1)
     drive_to_color_button['command'] = lambda: drive_to_color_callback(mqtt_client)
     root.bind('<c>', lambda event: drive_to_color_callback(mqtt_client))
 
-    forward_button = ttk.Button(main_frame, text="Turn Left")
-    forward_button.grid(row=3, column=0)
+    forward_button = ttk.Button(main_frame, text="Forward")
+    forward_button.grid(row=2, column=1)
     forward_button['command'] = lambda: forward_callback(mqtt_client)
     root.bind('<Up>', lambda event: forward_callback(mqtt_client))
 
