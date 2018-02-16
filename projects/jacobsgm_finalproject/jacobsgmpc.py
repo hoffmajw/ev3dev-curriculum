@@ -14,7 +14,6 @@ import mqtt_remote_method_calls as com
 def main():
     # a MyDelegate class.  Simply construct the MqttClient with no parameter in the constructor (easy).
 
-
     mqtt_client = com.MqttClient()
     mqtt_client.connect_to_ev3()
 
@@ -24,11 +23,22 @@ def main():
     main_frame = ttk.Frame(root, padding=20, relief='raised')
     main_frame.grid()
 
-
-
+    photo = tkinter.PhotoImage(file='tkinter_mqtt_ev3.gif',width = 1,height = 1)
+    button1 = ttk.Button(main_frame, image=photo)
+    button1.image = photo
+    button1.grid()
+    button1['command'] = lambda: print('You found the hidden easter egg!, '
+                                       'You automatically win the match between'
+                                       ' you and you opponent! Feel free to brag!'
+                                       'Maybe even use the Gloat function hahaha!!')
     #Buttons
-    forward_button = ttk.Button(main_frame, text="Forward")
-    forward_button.grid(row=2, column=1)
+    drive_to_color_button = ttk.Button(main_frame, text="Forward")
+    drive_to_color_button.grid(row=2, column=1)
+    drive_to_color_button['command'] = lambda: drive_to_color_callback(mqtt_client)
+    root.bind('<c>', lambda event: drive_to_color_callback(mqtt_client))
+
+    forward_button = ttk.Button(main_frame, text="Turn Left")
+    forward_button.grid(row=3, column=0)
     forward_button['command'] = lambda: forward_callback(mqtt_client)
     root.bind('<Up>', lambda event: forward_callback(mqtt_client))
 
@@ -72,8 +82,8 @@ def main():
 
     root.mainloop()
 
-def forward_callback(mqtt_client):
-    mqtt_client.send_message("move_forward",[600,600])
+def drive_to_color_callback(mqtt_client):
+    mqtt_client.send_message("drive_to_color")
 
 def back_callback(mqtt_client):
     mqtt_client.send_message("move_back",[600,600])
@@ -86,6 +96,9 @@ def right_callback(mqtt_client):
 
 def stop_callback(mqtt_client):
     mqtt_client.send_message("stop")
+
+def forward_callback(mqtt_client):
+    mqtt_client.send_message("move_forward_quick",[600,600])
 
 
 def send_gloat(mqtt_client):

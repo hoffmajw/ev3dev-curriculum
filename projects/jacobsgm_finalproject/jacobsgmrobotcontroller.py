@@ -77,7 +77,7 @@ class Snatch3r(object):
         """Will turn the robot the specified degrees at the specified speed.
             Turns left if degrees are positive, and right if degrees are
             negative"""
-        degrees_to_turn = degrees_to_turn * 4.75
+        degrees_to_turn = degrees_to_turn * 4.8
 
         self.left_motor.run_to_rel_pos(position_sp=(-1) * degrees_to_turn,
                                        speed_sp=turn_speed_sp,
@@ -87,17 +87,12 @@ class Snatch3r(object):
                                         stop_action=ev3.Motor.STOP_ACTION_BRAKE)
         self.left_motor.wait_while(ev3.Motor.STATE_RUNNING)
         self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
-
-
-
-
 
     def turn_circle(self,turn_speed_sp=600):
         """Will turn the robot 360 degrees at the specified speed.
             Turns left if degrees are positive, and right if degrees are
             negative"""
-        print("here")
-        degrees_to_turn = 360 * 4.75
+        degrees_to_turn = 360 * 5.5
 
         self.left_motor.run_to_rel_pos(position_sp=(-1) * degrees_to_turn,
                                        speed_sp=turn_speed_sp,
@@ -107,11 +102,6 @@ class Snatch3r(object):
                                         stop_action=ev3.Motor.STOP_ACTION_BRAKE)
         self.left_motor.wait_while(ev3.Motor.STATE_RUNNING)
         self.right_motor.wait_while(ev3.Motor.STATE_RUNNING)
-
-
-
-
-
 
     def arm_calibration(self):
         """Raises then lowers the arm at max speed and sets the absolute
@@ -157,6 +147,14 @@ class Snatch3r(object):
         """Stops the left and right motors"""
         self.left_motor.stop()
         self.right_motor.stop()
+
+    def move_forward_quick(self, left_speed, right_speed):
+        """Drives robot forward at the specified speed until another
+            drive method is called"""
+        self.left_motor.run_forever(speed_sp=left_speed)
+        self.right_motor.run_forever(speed_sp=right_speed)
+        time.sleep(0.5)
+        self.stop
 
     def arm_up(self):
         """Brings the robot arm up until the touch sensor is pressed
@@ -209,8 +207,6 @@ class Snatch3r(object):
                         if math.fabs(self.beacon.heading) < 10:
                             return False
 
-
-
     def drive_to_color(self):
         """
         When the button_state is True (pressed), drives the robot forward until the desired color is detected.
@@ -218,30 +214,41 @@ class Snatch3r(object):
         """
         self.move_forward(600, 600)
         while True:
-            if self.color_sensor.color == ev3.ColorSensor.COLOR_RED or ev3.ColorSensor.COLOR_BLUE:
-                if(self.color_sensor== ev3.ColorSensor.COLOR_BLUE):
+            if self.color_sensor.color == ev3.ColorSensor.COLOR_RED or\
+                            self.color_sensor.color ==ev3.ColorSensor.COLOR_BLUE:
+                if(self.color_sensor.color == ev3.ColorSensor.COLOR_BLUE):
                     self.stop()
                     ev3.Sound.speak("You have hit another player! Sorry!").wait()
-                    self.move_forward_to_white(600)
-                elif(self.color_sensor== ev3.ColorSensor.COLOR_RED):
+                    self.move_forward_to_white(600,600)
+
+
+                elif(self.color_sensor.color == ev3.ColorSensor.COLOR_RED):
                     self.stop()
                     ev3.Sound.speak("You have gotten hit by another player. Oh man!").wait()
-                    self.move_forward_to_white(-600)
+                    self.move_backward_to_white(600,600)
                 break
 
-    def move_forward_to_white(self,speed):
+    def move_forward_to_white(self,speed,speed2):
         """
         When the button_state is True (pressed), drives the robot forward until the desired color is detected.
         When the color_to_seek is detected the robot stops moving forward and reacts to the color accordingly.
         """
-        self.move_forward(speed)
+        self.move_forward(speed,speed2)
         while True:
             if self.color_sensor.color == ev3.ColorSensor.COLOR_WHITE:
                 self.stop()
                 break
 
-
-
+    def move_backward_to_white(self,speed,speed2):
+        """
+        When the button_state is True (pressed), drives the robot forward until the desired color is detected.
+        When the color_to_seek is detected the robot stops moving forward and reacts to the color accordingly.
+        """
+        self.move_back(speed,speed2)
+        while True:
+            if self.color_sensor.color == ev3.ColorSensor.COLOR_WHITE:
+                self.stop()
+                break
 
     def shutdown(self):
         """Stops all motors and sets leds to green"""
