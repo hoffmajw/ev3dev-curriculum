@@ -230,8 +230,8 @@ class Snatch3r(object):
 
     def move_forward_to_white(self,speed,speed2):
         """
-        When the button_state is True (pressed), drives the robot forward until the desired color is detected.
-        When the color_to_seek is detected the robot stops moving forward and reacts to the color accordingly.
+        When this method is called, drives the robot forward until white is detected.
+        When white is detected the robot stops moving forward.
         """
         self.move_forward(speed,speed2)
         while True:
@@ -241,8 +241,8 @@ class Snatch3r(object):
 
     def move_backward_to_white(self,speed,speed2):
         """
-        When the button_state is True (pressed), drives the robot forward until the desired color is detected.
-        When the color_to_seek is detected the robot stops moving forward and reacts to the color accordingly.
+        When this  method is called, drives the robot backward until white is detected.
+        When white is detected the robot stops moving backward.
         """
         self.move_back(speed,speed2)
         while True:

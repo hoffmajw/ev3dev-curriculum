@@ -20,13 +20,7 @@ def main():
     root = tkinter.Tk()
     root.title("Sorry! BoardGame")
 
-    #main_frame = ttk.Frame(root, padding=20, relief='raised')
-    #main_frame.grid()
-
-
     def on_configure(event):
-        # update scrollregion after starting 'mainloop'
-        #  when all widgets are in canvas
         canvas.configure(scrollregion=canvas.bbox('all'))
 
     canvas = tkinter.Canvas(root)
@@ -36,11 +30,7 @@ def main():
     scrollbar.pack(side=tkinter.LEFT, fill='y')
 
     canvas.configure(yscrollcommand=scrollbar.set)
-    # update scrollregion after starting 'mainloop'
-    # when all widgets are in canvas
     canvas.bind('<Configure>', on_configure)
-
-    # --- put frame in canvas ---
 
     main_frame = tkinter.Frame(canvas)
     canvas.create_window((0, 0), window=main_frame, anchor='nw')
@@ -54,6 +44,7 @@ def main():
                                        ' You automatically win the match between'
                                        ' you and you opponent! Feel free to brag!'
                                        ' Maybe even use the Gloat function hahaha!!')
+
     #Buttons
     drive_to_color_button = ttk.Button(main_frame, text="Color")
     drive_to_color_button.grid(row=7, column=1)
