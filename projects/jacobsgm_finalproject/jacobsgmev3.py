@@ -3,7 +3,7 @@ Author: Garrett Jacobs.
 """
 
 import mqtt_remote_method_calls as com
-import robot_controller as robo
+import jacobsgmrobotcontroller as robo
 
 
 def main():
